@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<!-- The following code has been developed by students and/or researchers of the Freshman Research Initiative, DIY Diagnostics Stream at The University of Texas at Austin.  This code is shared for demonstration purposes and should not be considered a product -- it is for entertainment purposes only.  Any user of this code does so at their own risk. Members of the DIY Stream, FRI, and The University of Texas system are not liable for anything related to this code.
+ 
+  THIS CODE SHOULD NOT BE USED TO DIAGNOSE ANY KIND OF MEDICAL CONDITION.
+ 
+  Further Information:
+  http://cns.utexas.edu/fri
+ 
+  Research Educator:
+  Timothy E. Riedel
+  triedel@utexas.edu
+ 
+  Authors in no particular order:
+  Authors: Timothy E. Riedel, Anais Rivera, Daisy Moran, Jessica Osaide, Nivedita Hari, Syed Akbar, Shahan Mohammad
+	
+  References:
+  http://docs.webplatform.org/wiki/concepts/programming/drawing_images_onto_canvas#Loading_the_image_programmatically
+  http://www.html5rocks.com/en/tutorials/file/dndfiles/
+  http://www.w3.org/TR/FileAPI/
+  http://mobilehtml5.org/
+  http://stackoverflow.com/questions/11929099/html5-canvas-drawimage-ratio-bug-ios
+  https://realfavicongenerator.net/your-favicon-is-ready
+  
+  Brief Description of Goal of Code:
+This app takes a picture with your device's camera and then displays color information when a user touches (or clicks) on the image.
+ 
+  Known Issues:
+  None as of now
+-->
+
+<head> 
+	 <title>A More Advanced Example App</title> 
+
+	<link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+
+	<!-- Stuff from this website: https://realfavicongenerator.net/ -->
+	<link rel="icon" type="image/svg+xml" href="favicon/favicon.svg" />
+	<link rel="shortcut icon" href="favicon/favicon.ico" />
+	<link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png" />
+	<link rel="manifest" href="favicon/site.webmanifest" />
+	
+	 <meta name="viewport" content="width=device-width, initial-scale=1">
+	 <meta name="mobile-web-app-capable" content="yes">
+	 <link rel="stylesheet" href="w3.css">
+	 <link rel="stylesheet" href="w3-colors-flat.css">	
+</head> 
+	
+<body>
+  
+    <header class="w3-container w3-flat-carrot">
+         <h1>Color Example App</h1></div>
+    </header>
+	
+    <div class="w3-container">	
+      <p>This app takes a picture with your device's camera and then displays color information when a user touches (or clicks) on the image.</p>
+      
+        Press the "choose file" button to create or choose image file:<br>
+        <input type="file" id="fileInput" STYLE="background-color: #FF6600;">
+	<br><br>
+    
+	<canvas id="myCanvas" width="500" height="667">
+	</canvas><br> <!-- creates canvas for user to input image --> 
+
+	    
+      <p>Touch the picture to see an output of your RGB and HSV values.</p> <!-- message above canvas -->
+      <p id="messageDisplayArea">This area will be replaced by the RGB values once the image is tapped.</p> <!-- message above canvas -->
+	<p id="messageDisplayArea2">This area will be replaced by the HSV values once the image is tapped.</p> <!-- message above canvas -->
+	<p id="messageDisplayArea3">This area will be replaced by the color name once the image is tapped.</p> <!-- message above canvas -->
+
+		  </div>
+<!--    <footer class="w3-bottom w3-container w3-flat-carrot">
+      <p>DIY Diagnostics</p>
+    </footer> -->
+
+</body>
+
+  <script>
+  /* This script below initiates the canvas and puts the text on the canvas "myCanvas" */
+    		const canvas = document.getElementById('myCanvas');
+    		const ctx = canvas.getContext('2d');
+    		ctx.font = '20pt Calibri';
+    		ctx.fillStyle = "black";
+    		ctx.fillText("Push Choose File above. Image will load here.", 10, 20);
+		ctx.strokeRect(0, 0, canvas.width, canvas.height);
+	  
+   	 const message = document.getElementById('messageDisplayArea');
+	  const message2 = document.getElementById('messageDisplayArea2');
+	const message3 = document.getElementById('messageDisplayArea3');
+
+	  
+	const fileInput = document.getElementById('fileInput');
+    let loadedImage = null;
+
+/* This converts the color from a RBG format to HSV format. This is done to improve the accuracy for colors as the RGB format can be very finicky when detecting intermediate colors. */
+function rgbToHsv(r, g, b) {
+      r /= 255; g /= 255; b /= 255; /* converts RBG to a 0 to 1 scale */
+      let max = Math.max(r, g, b), min = Math.min(r, g, b);
+      let h, s, v = max;
+      let d = max - min;
+      s = max === 0 ? 0 : d / max;
+      if (max === min) {
+        h = 0;
+      } else {
+        switch (max) {
+          case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+          case g: h = (b - r) / d + 2; break;
+          case b: h = (r - g) / d + 4; break;
+        }
+        h /= 6;
+      }
+      return [h * 360, s * 100, v * 100];
+    }
+
+// this function takes the HSV values of the pixel and uses if statements to categorize a color   
+ function getColorName(h, s, v) {
+      if (s < 20 || v < 50) return "Unclear/Neutral"; 
+      if (h >= 15 && h < 45) return "Orange";
+      if (h >= 45 && h <= 75) return "Yellow"; 
+      if (h >= 75 && h <= 165) return "Green"; 
+      if (h >= 165 && h <= 255) return "Blue";
+      if (h >= 255 && h <= 345) return "Purple/Pink"; 
+      if (h >= 345 && h <= 360 || h >= 0 && h <= 15) return "Red"; 
+      return "Other Color";
+    }
+    
+    canvas.onclick = function(event) { // this creates an event that happens when a pixel on the canvas is clicked.
+      const rect = canvas.getBoundingClientRect(); // returns the size of the element and its position relative to the viewport
+      const x = event.clientX - rect.left; // gives the position of the click relative to the browser window
+      const y = event.clientY - rect.top; // gives the position of the click relative to the browser window
+
+      const pixel = ctx.getImageData(x, y, 1, 1).data;
+      const [h, s, v] = rgbToHsv(pixel[0], pixel[1], pixel[2]);
+     const colorName = getColorName(h, s, v);
+   
+      message.innerText = "HSV values= " + Math.round(h) + ", " + Math.round(s) + ", " + Math.round(v);
+	message2.innerText = "RGB values= " + Math.round(pixel[0]) + ", " + Math.round(pixel[1]) + ", " + Math.round(pixel[2]);
+	    message3.innerText = "Color Name= " + colorName;
+    }; 
+// color that is tapped and detected is shown below the selected photo
+   
+    fileInput.onchange = function(e) {
+      const file = fileInput.files[0];
+      if (!file.type.startsWith('image/')) {
+        message.innerText = "Please select a valid image.";
+        return;
+      }
+// validates the proper image types when choosing a file
+
+ // the following function draws the uploaded image onto the canvas
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        loadedImage = new Image();
+        loadedImage.onload = function() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          ctx.drawImage(loadedImage, 0, 0, canvas.width, canvas.height);
+        };
+        loadedImage.src = evt.target.result;
+      };
+      reader.readAsDataURL(file);
+    };
+  </script>
+
+
+
+		
+
+</html>
