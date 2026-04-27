@@ -87,7 +87,7 @@ This app takes a picture with your device's camera and then displays color infor
    	 const message = document.getElementById('messageDisplayArea');
 	  const message2 = document.getElementById('messageDisplayArea2');
 	const message3 = document.getElementById('messageDisplayArea3');
-
+    const message4 = document.getElementById('messageDisplayArea4');
 	  
 	const fileInput = document.getElementById('fileInput');
     let loadedImage = null;
@@ -123,7 +123,11 @@ function rgbToHsv(r, g, b) {
       if (h >= 345 && h <= 360 || h >= 0 && h <= 15) return "Red"; 
       return "Other Color";
     }
-    
+  function rgbTopH(r) {
+    pH = -0.0269*r + 9;
+    return pH;
+ };
+
     canvas.onclick = function(event) { // this creates an event that happens when a pixel on the canvas is clicked.
       const rect = canvas.getBoundingClientRect(); // returns the size of the element and its position relative to the viewport
       const x = event.clientX - rect.left; // gives the position of the click relative to the browser window
@@ -132,10 +136,12 @@ function rgbToHsv(r, g, b) {
       const pixel = ctx.getImageData(x, y, 1, 1).data;
       const [h, s, v] = rgbToHsv(pixel[0], pixel[1], pixel[2]);
      const colorName = getColorName(h, s, v);
-   
+      const pH = rgbTopH(pixel[0]);
+
       message.innerText = "HSV values= " + Math.round(h) + ", " + Math.round(s) + ", " + Math.round(v);
 	message2.innerText = "RGB values= " + Math.round(pixel[0]) + ", " + Math.round(pixel[1]) + ", " + Math.round(pixel[2]);
 	    message3.innerText = "Color Name= " + colorName;
+      message4.innerText = "Predicted pH = " + pH;
     }; 
 // color that is tapped and detected is shown below the selected photo
    
