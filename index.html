@@ -23,14 +23,14 @@
   https://realfavicongenerator.net/your-favicon-is-ready
   
   Brief Description of Goal of Code:
-This app takes a picture with your device's camera and then displays color information when a user touches (or clicks) on the image.
+This app takes a picture with your device's camera and then displays color information when a user touches (or clicks) on the image. The app can also predict pH of the given color strip given that the user uploads an image of the correct pH strip.
  
   Known Issues:
   None as of now
 -->
 
 <head> 
-	 <title>A More Advanced Example App</title> 
+	 <title>pH Image Analysis App</title> 
 
 	<link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
 
@@ -49,11 +49,11 @@ This app takes a picture with your device's camera and then displays color infor
 <body>
   
     <header class="w3-container w3-flat-carrot">
-         <h1>Color Example App</h1></div>
+         <h1>pH Instrument for pHydrion JUMBO pH Strips</h1></div>
     </header>
 	
     <div class="w3-container">	
-      <p>This app takes a picture with your device's camera and then displays color information when a user touches (or clicks) on the image.</p>
+      <p>Take or upload a picture of a pHydrion INSTA-CHEK 0-13 JUMBO pH strip! Then tap on the image to display color ifnormation and a predicted pH for the pH strip. This app only works for pH strips which have a value from 4-8.</p>
       
         Press the "choose file" button to create or choose image file:<br>
         <input type="file" id="fileInput" STYLE="background-color: #FF6600;">
@@ -63,11 +63,11 @@ This app takes a picture with your device's camera and then displays color infor
 	</canvas><br> <!-- creates canvas for user to input image --> 
 
 	    
-      <p>Touch the picture to see an output of your RGB and HSV values.</p> <!-- message above canvas -->
-      <p id="messageDisplayArea">This area will be replaced by the RGB values once the image is tapped.</p> <!-- message above canvas -->
-	<p id="messageDisplayArea2">This area will be replaced by the HSV values once the image is tapped.</p> <!-- message above canvas -->
-	<p id="messageDisplayArea3">This area will be replaced by the color name once the image is tapped.</p> <!-- message above canvas -->
-
+      <p>Touch the picture to see an output of your RGB values, HSV values, color name, and predicted pH.</p> <!-- message below canvas -->
+      <p id="messageDisplayArea">This area will be replaced by the RGB values once the image is tapped.</p> <!-- message below canvas -->
+	<p id="messageDisplayArea2">This area will be replaced by the HSV values once the image is tapped.</p> <!-- message below canvas -->
+	<p id="messageDisplayArea3">This area will be replaced by the color name once the image is tapped.</p> <!-- message below canvas -->
+  <p id="messageDisplayArea4">This area will be replaced by the predicted pH once the image is tapped.</p> <!-- message below canvas -->
 		  </div>
 <!--    <footer class="w3-bottom w3-container w3-flat-carrot">
       <p>DIY Diagnostics</p>
