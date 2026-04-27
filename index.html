@@ -141,7 +141,7 @@ function rgbToHsv(r, g, b) {
       message.innerText = "HSV values= " + Math.round(h) + ", " + Math.round(s) + ", " + Math.round(v);
 	message2.innerText = "RGB values= " + Math.round(pixel[0]) + ", " + Math.round(pixel[1]) + ", " + Math.round(pixel[2]);
 	    message3.innerText = "Color Name= " + colorName;
-      message4.innerText = "Predicted pH = " + pH;
+      message4.innerText = "Predicted pH = " + pH.toFixed(0);
     }; 
 // color that is tapped and detected is shown below the selected photo
    
